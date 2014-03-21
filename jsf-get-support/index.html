@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>JSF mit GET-Requests und lesbaren URLs (Michael Kurz, IRIAN, Javaland 2014)</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/irian.css" id="theme">
+
+        <style type="text/css">
+            .arrowDown {margin-top: 10px!important;margin-bottom: 10px!important;height: 50px;}
+            .left {float: left;}
+            .right {float: right;}
+            .versusContainer {margin: auto!important;height: 250px;width: 65%;}
+            .versusBox {width: 47%;background-color: #f3f3f3;border-radius: 6px; border: 1px solid rgba(0,0,0,0.05)!important;}
+            .versusBox .content {padding: 15px;height: 225px;}
+            .container {width: 65%;margin: 0 auto 15px auto!important;border: 1px solid rgba(0,0,0,0.05)!important;border-radius: 6px;background-color: #F3F3F3;text-align: left;font-size: 0.75em!important;line-height: normal!important;padding: 10px 24px!important;}
+        </style>
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+            <div style="height: 1.5em;padding-top: 0.2em;position: relative">
+                <div style="position:relative;width: 30%;margin: auto;height:1.5em;vertical-align: middle">
+                    <img src="images/irian-logo.png" style="height: 60px;float: left"/>
+                    <span style="color: rgb(35,136,219);font-size: 0.5em;float:right;padding-top: 0.8em;">THE SOFTWARE EXPERTS</span>
+                </div>
+            </div>
+
+            <!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section id="title">
+					<h2>JSF mit GET-Requests<br/> und lesbaren URLs</h2>
+					<p style="font-weight: bold;margin-top: 1.5em;">Michael Kurz | IRIAN</p>
+					<p style="font-size: 0.7em">@michi_kurz</p>
+					<p style="font-size: 0.7em">http://jsflive.wordpress.com</p>
+				</section>
+
+				<section id="agenda">
+					<h2>Agenda</h2>
+                    <ul>
+                        <li>Motivation</li>
+                        <li>GET-Unterstützung in JSF 2.x</li>
+                        <li>RESTful URLs mit OCPsoft Rewrite</li>
+                        <li>Demonstrationen</li>
+                    </ul>
+				</section>
+
+                <section id="webVersusJsf">
+                    <h2>Das Web versus JSF</h2>
+                    <div class="versusContainer">
+                        <div class="versusBox left">
+                            <div class="content">
+                                <div style="height: 140px;padding-top:30px;">
+                                    <p style="font-size: 2em;font-weight: bold;color: rgb(120,120,120);letter-spacing: 0.01em:font-weight: bold;">WWW</p>
+                                </div>
+                                <span class="btn">HTTP GET</span>
+                            </div>
+                        </div>
+                        <div class="versusBox right">
+                            <div class="content">
+                                <div style="height: 155px;padding-top:15px;">
+                                    <img style="border: none;width: 70%;" src="images/jsf-720px.png"/>
+                                </div>
+                                <span class="btn">HTTP POST</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="getSupportJsf2">
+                    <h2>GET-Unterstützung in JSF 2</h2>
+                    <ul>
+                        <li><strong>h:link</strong> und <strong>h:button</strong></li>
+                        <li>View-Parameter</li>
+                        <li>View-Actions (ab JSF 2.2)</li>
+                    </ul>
+                </section>
+
+                <section id="navJsf2">
+                    <section id="navLinkButton">
+                        <h2>Navigation mit<br/>h:link und h:button</h2>
+                        <ul>
+                            <li>GET-Navigation</li>
+                            <li><strong>h:form</strong> nicht erforderlich</li>
+                        </ul>
+                    </section>
+
+                    <section id="navLink">
+                        <h2>Navigation mit h:link</h2>
+                        <pre class="mediumWidth"><code data-trim contenteditable>
+&lt;h:link outcome="/page.xhtml" value="Page"/>
+                        </code></pre>
+                        <img class="arrowDown" src="images/arrow-down.png"/>
+                        <pre class="mediumWidth"><code data-trim contenteditable>
+&lt;a href="/page.jsf">Page&lt;/a>
+                        </code></pre>
+                    </section>
+
+                    <section id="navLinkParameter">
+                        <h2>h:link mit Parametern</h2>
+                        <pre class="mediumWidth"><code data-trim contenteditable>
+&lt;h:link outcome="/page.xhtml" value="Page">
+  &lt;f:param name="para" value="1"/>
+&lt;/h:link>
+                         </code></pre>
+                        <img class="arrowDown" src="images/arrow-down.png"/>
+                        <pre class="mediumWidth"><code data-trim contenteditable>
+&lt;a href="/page.jsf?para=1">Page&lt;/a>
+                        </code></pre>
+                    </section>
+
+                    <section id="navButton">
+                        <h2>Navigation mit h:button</h2>
+                        <pre class="mediumWidth"><code data-trim contenteditable>
+&lt;h:button outcome="/page.xhtml" value="Page"/>
+                         </code></pre>
+                        <img class="arrowDown" src="images/arrow-down.png"/>
+                        <pre class="mediumWidth"><code data-trim contenteditable>
+&lt;input type="button" value="Page"
+       onclick="window.location.href='/page.jsf'"/>
+                        </code></pre>
+                    </section>
+                </section>
+
+                <section id="viewParameter">
+                    <h2>View-Parameter</h2>
+                        <pre class="mediumWidth"><code data-trim contenteditable>
+&lt;f:metadata>
+    &lt;f:viewParam name="id" value="#{myBean.id}"/>
+&lt;/f:metadata>
+                        </code></pre>
+                        <pre class="mediumWidth"><code data-trim contenteditable>
+@Named @RequestScoped
+public class MyBean {
+    private long id;
+    public long getId() {return id;}
+    public void setId(long id) {this.id = id;}
+}
+                        </code></pre>
+                </section>
+
+                <section id="viewActionsContainer">
+                    <section id="viewActions">
+                        <h2>View-Actions</h2>
+                        <ul>
+                            <li>Echte View-Actions mit JSF 2.2</li>
+                            <li>System-Event <strong>PreRenderViewEvent</strong></li>
+                            <li>CODI: <strong>@PreRenderView</strong></li>
+                        </ul>
+                    </section>
+                <section id="viewActionsJsf22">
+                    <h2>View-Actions mit JSF 2.2</h2>
+                        <pre class="mediumWidth"><code data-trim contenteditable>
+&lt;f:metadata>
+    &lt;f:viewParam name="id" value="#{bean.id}"/>
+    &lt;f:viewAction action="#{bean.load}"
+        onPostback="false"
+        phase="INVOKE_APPLICATION"/>
+&lt;/f:metadata>
+                        </code></pre>
+                        <pre class="mediumWidth"><code data-trim contenteditable>
+@Named @RequestScoped
+public class MyBean {
+    private long id;
+    public long getId() {return id;}
+    public void setId(long id) {this.id = id;}
+}
+                        </code></pre>
+                </section>
+
+                <section id="viewActionsJsf2x">
+                    <h2>PreRenderViewEvent</h2>
+                        <pre class="mediumWidth"><code data-trim contenteditable>
+&lt;f:event type="preRenderView"
+    listener="#{bean.preRender}"/>
+                        </code></pre>
+                        <pre class="mediumWidth"><code data-trim contenteditable>
+public void preRender(ComponentSystemEvent event) {
+    mail = mailService.findById(id);
+}
+                        </code></pre>
+                </section>
+                </section>
+
+                <section id="demoGetSupport">
+                    <h2>Demo: JSF 2 GET-Support</h2>
+                    <img class="qrCode" src="images/qrcode-github-jsf-get-with-logo.png"/>
+                    <p class="demoUrl"><strong>https://github.com/jsflive/jsf-get-examples</strong> (jsf-get01)</p>
+                </section>
+
+                <section id="postRedirectGet">
+                    <h2>Post-Redirect-Get mit JSF 2</h2>
+                        <pre class="largeWidth"><code data-trim contenteditable>
+&lt;h:form>
+  &lt;h:commandButton action="#{myBean.save}" value="Save"/>
+  &lt;h:commandButton value="Cancel" immediate="true"
+      action="myPage?faces-redirect=true&amp;amp;
+                     faces-include-view-params=true"/>
+&lt;/h:form>
+                        </code></pre>
+                        <pre class="largeWidth"><code data-trim contenteditable>
+@Named @RequestScoped
+public class MyBean {
+  public String save() {
+    return "myPage?faces-redirect=true"
+        + "&faces-include-view-params=true";
+  }
+}
+                        </code></pre>
+                </section>
+
+                <section id="demoPostRedirectGet">
+                    <h2>Demo: Post-Redirect-Get</h2>
+                    <img class="qrCode" src="images/qrcode-github-jsf-get-with-logo.png"/>
+                    <p class="demoUrl"><strong>https://github.com/jsflive/jsf-get-examples</strong> (jsf-get02)</p>
+                </section>
+
+                <section id="restfulUrls">
+                    <section id="restfulUrlsBeispiel">
+                        <h2>RESTful URLs</h2>
+                        <p class="url">http://myshop.at/node.html?mode=list&cat=1234</p>
+                        <img class="arrowDown" src="images/arrow-down.png"/>
+                        <p class="url">http://myshop.at/products/books</p>
+                    </section>
+
+                    <section id="restfulUrlsWarum">
+                        <h2>Warum RESTful URLs?</h2>
+                        <ul>
+                            <li>Lesbarkeit</li>
+                            <li>Search Engine Optimization (SEO)</li>
+                            <li>Vertrauen</li>
+                            <li>Sieht besser aus</li>
+                        </ul>
+                    </section>
+
+                    <section id="restfulUrlsRewrite">
+                        <h2>OCPsoft Rewrite</h2>
+                        <ul>
+                            <li>RESTful URLs für Java EE</li>
+                            <li>Nachfolger von PrettyFaces</li>
+                        </ul>
+                        <p><img src="images/ocpsoft_logo.png"/></p>
+                    </section>
+                </section>
+
+                <section id="rewriteBsp1">
+                    <section id="rewriteBsp1Mapping">
+                        <h2>Beispiel 1: Mapping für JSF-URL</h2>
+                        <p class="url">http://myshop.at/<span class="highlight">faces</span>/account<span class="highlight">.xhtml</span></p>
+                        <img class="arrowDown" src="images/arrow-down.png"/>
+                        <p class="url">http://myshop.at/account</p>
+                    </section>
+
+                    <section id="rewriteBsp1ConfigApi">
+                        <h2>Beispiel 1: Konfiguration<br/>mit Java API</h2>
+                        <pre class="largeWidth"><code data-trim contenteditable>
+@RewriteConfiguration
+public class MyConfigurationProvider
+    extends HttpConfigurationProvider {
+  @Override
+  public Configuration getConfiguration(ServletContext c) {
+    return ConfigurationBuilder.begin()
+        .addRule(Join.path("/account/")
+        .to("/faces/account.xhtml"));
+  }
+  @Override
+  public int priority() {return 10;}
+}
+                        </code></pre>
+                    </section>
+
+                    <section id="rewriteBsp1ConfigAnnotation">
+                        <h2>Beispiel 1: Konfiguration<br/>über Annotation</h2>
+                        <pre class="largeWidth"><code data-trim contenteditable>
+@Named
+@RequestScoped
+@Join(path="/account", to="/faces/account.xhtml")
+public class AccountPage {}
+                        </code></pre>
+                    </section>
+                </section>
+
+                <section id="rewriteBsp2">
+                    <section id="rewriteBsp2Mapping">
+                        <h2>Beispiel 2: Mapping für JSF-URL mit Parameter</h2>
+                        <p class="url">http://myshop.at/<span class="highlight">faces/products/details.xhtml?id=</span>123</p>
+                        <img class="arrowDown" src="images/arrow-down.png"/>
+                        <p class="url">http://myshop.at/product/123</p>
+                    </section>
+
+                    <section id="rewriteBsp2ConfigApi">
+                        <h2>Beispiel 2: Konfiguration<br/>mit Java API</h2>
+                            <pre class="largeWidth"><code data-trim contenteditable>
+@RewriteConfiguration
+public class MyConfigurationProvider
+    extends HttpConfigurationProvider {
+  @Override
+  public Configuration getConfiguration(ServletContext c) {
+    return ConfigurationBuilder.begin()
+        .addRule(Join.path("/product/{id}")
+        .to("/faces/products/details.xhtml"));
+  }
+  @Override
+  public int priority() {return 10;}
+  }
+                            </code></pre>
+                    </section>
+
+                    <section id="rewriteBsp2ConfigAnnotation">
+                        <h2>Beispiel 2: Konfiguration<br/>über Annotation</h2>
+                            <pre class="largeWidth"><code data-trim contenteditable>
+@Named
+@RequestScoped
+@Join(path = "/product/{id}",
+    to="/faces/products/details.xhtml")
+public class ProductDetailsPage {}
+                        </code></pre>
+                    </section>
+                </section>
+
+                <section id="demoRewrite">
+                    <h2>Demo: Rewrite</h2>
+                    <img class="qrCode" src="images/qrcode-github-jsf-get-with-logo.png"/>
+                    <p class="demoUrl"><strong>https://github.com/jsflive/jsf-get-examples</strong> (jsf-get03)</p>
+                </section>
+
+                <section id="fazit">
+                    <h2>Fazit</h2>
+                    <ul>
+                        <li>JSF 2 vereinfacht GET-Unterstützung</li>
+                        <li>JSF 2.2 bringt View-Actions</li>
+                        <li>OCPsoft Rewrite</li>
+                        <li>Notwendig fürs Intranet?</li>
+                    </ul>
+                </section>
+
+                <section id="weitereInfos">
+                    <h2>Weitere Informationen</h2>
+                    <div class="container">
+                        Michael Kurz, Martin Marinschek<br/>
+                        <strong>JavaServer Faces 2.2</strong>, dpunkt.verlag
+                    </div>
+                    <div class="container">
+                        IRIAN JSF@Work Online-Tutorial<br/>
+                        <strong>http://jsfatwork.irian.at</strong>
+                    </div>
+                    <div class="container" style="position: relative">
+                        <div style="position: absolute; right: 10px; top: 0; width: 64px;">
+                            <img src="images/jsflive-logo.png" style="height: 64px"/>
+                        </div>
+                        <div style="position: relative;">
+                            JSFlive Weblog<br/>
+                            <strong>http://jsflive.wordpress.com</strong>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+
+		<script>
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Parallax scrolling
+				// parallaxBackgroundImage: 'https://s3.amazonaws.com/hakim-static/reveal-js/reveal-parallax-1.jpg',
+				// parallaxBackgroundSize: '2100px 900px',
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
