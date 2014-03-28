@@ -1,13 +1,12 @@
 <!doctype html>
-<html lang="en">
-
+<html lang="de">
 	<head>
 		<meta charset="utf-8">
 
 		<title>JSF mit GET-Requests und lesbaren URLs (Michael Kurz, IRIAN, Javaland 2014)</title>
 
-		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
-		<meta name="author" content="Hakim El Hattab">
+		<meta name="description" content="Präsentation für den Vortrag JSF mit GET-Requests und lesbaren URLs">
+		<meta name="author" content="Michael Kurz, IRIAN Solutions GmbH">
 
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -55,7 +54,7 @@
 			<div class="slides">
 				<section id="title">
 					<h2>JSF mit GET-Requests<br/> und lesbaren URLs</h2>
-					<p style="font-weight: bold;margin-top: 1.5em;">Michael Kurz | IRIAN</p>
+					<p style="font-weight: bold;margin-top: 1.5em;">Michael Kurz | <a href="http://irian.at" title="IRIAN" target="_blank">IRIAN</a></p>
 					<p style="font-size: 0.7em"><a href="https://twitter.com/michi_kurz" title="Michael Kurz@Twitter" target="_blank">@michi_kurz</a></p>
 					<p style="font-size: 0.7em"><a href="http://jsflive.wordpress.com" title="JSFlive: Michael Kurz's JSF Weblog" target="_blank">http://jsflive.wordpress.com</a></p>
 				</section>
@@ -199,11 +198,9 @@ public class MyBean {
 &lt;/f:metadata>
                         </code></pre>
                         <pre class="mediumWidth"><code data-trim contenteditable>
-@Named @RequestScoped
-public class MyBean {
-    private long id;
-    public long getId() {return id;}
-    public void setId(long id) {this.id = id;}
+public String load() {
+    mail = mailService.findById(id);
+    return null;
 }
                         </code></pre>
                 </section>
